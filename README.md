@@ -42,20 +42,23 @@ EDSR 超解析模型放大（x2 / x3 / x4）
 
 ```
 Photomosaic/
-├── main.py          # 主要 Photomosaic 生成器
-├── test.py          # 改進版（更細磁磚、更好的錯誤處理）
-├── dominant.py      # KMeans 色彩分析工具
-├── cache.json       # 圖庫色彩快取（加速查詢）
-├── van/             # 梵谷畫作磁磚
-├── pixel_2/         # 2 色純色方塊
-├── pixel_7/         # 7 色純色方塊
-├── pixel_24/        # 24 色純色方塊
-├── out2.png         # 實驗 1 輸出
-├── out24.png        # 實驗 3 輸出
-├── outvan.png       # 實驗 4 輸出（梵谷圖庫）
-├── oart.png         # 實驗 6 輸出（世界名畫，16,145 張）
-├── van_highres.png  # 高解析度輸出（EDSR 放大）
-└── Python-Photomosaic-master/  # 原始模板（參考來源）
+├── index.html           # 成果展示網頁（GitHub Pages）
+├── src/
+│   ├── main.py          # 主要 Photomosaic 生成器
+│   ├── test.py          # 改進版（更細磁磚、更好的錯誤處理）
+│   ├── dominant.py      # KMeans 色彩分析工具
+│   └── cache.json       # 圖庫色彩快取（加速查詢）
+├── videos/              # 六種實驗的成果影片
+├── tiles/
+│   ├── pixel_2/         # 2 色純色方塊磁磚
+│   ├── pixel_7/         # 7 色純色方塊磁磚
+│   └── pixel_24/        # 24 色純色方塊磁磚
+├── data/
+│   ├── Van Gogh.png     # 原始目標圖片
+│   ├── out2.png         # 實驗 1 輸出（2 色）
+│   ├── outvan.png       # 實驗 4 輸出（梵谷圖庫）
+│   └── oart.png         # 實驗 6 輸出（世界名畫 16,145 張）
+└── van/                 # 梵谷單一畫家圖庫（磁磚來源）
 ```
 
 > 圖庫資料集（`art/`，2.1 GB）與 AI 模型（`EDSR_*.pb`）因檔案過大未上傳。
@@ -87,9 +90,11 @@ python dominant.py
 
 ## 成果展示
 
-| 2 色 | 梵谷圖庫 | 世界名畫（16,145 張） |
-|:---:|:---:|:---:|
-| ![2色](out2.png) | ![梵谷](outvan.png) | ![全圖庫](oart.png) |
+| 原圖 | 2 色像素 | 梵谷圖庫 | 世界名畫（16,145 張） |
+|:---:|:---:|:---:|:---:|
+| ![原圖](data/Van%20Gogh.png) | ![2色](data/out2.png) | ![梵谷](data/outvan.png) | ![全圖庫](data/oart.png) |
+
+> 🎬 完整六種實驗影片：[展示網頁](https://doreen1113.github.io/Photomosaic/)
 
 ---
 

@@ -2,77 +2,350 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="Van Gogh.png" type="image/png">
-  <title>梵谷?��?�?/title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《梵谷六重奏》Photomosaic</title>
+  <link rel="icon" href="data/Van Gogh.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0a0e27;
+      --bg-card: #1a1f3a;
+      --accent: #00d4ff;
+      --accent2: #ff006e;
+      --text: #ffffff;
+      --text-dim: #a8b2d1;
+      --border: rgba(0, 212, 255, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: sans-serif;
+      font-family: 'Crimson Pro', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
       text-align: center;
-      padding: 20px;
-      margin: 0;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
     }
-    video {
-      width: 95%;
-      max-width: 800px;
-      margin-top: 20px;
+
+    header h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
     }
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 10px;
+
+    header p {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      letter-spacing: 1px;
     }
-    .buttons button {
-      flex: 1 1 45%;
-      padding: 15px;
-      font-size: 18px;
-      min-width: 120px;
-      border-radius: 8px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
+
+    /* 成果圖比較 */
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .compare-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .compare-item:hover { border-color: var(--accent); }
+
+    .compare-item img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .compare-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 0.4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* 實驗選擇按鈕 */
+    .experiments {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .exp-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1rem;
       cursor: pointer;
-      transition: background-color 0.3s;
+      text-align: left;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .buttons button:hover {
-      background-color: #388e3c;
+
+    .exp-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.3s ease;
     }
-    @media (max-width: 500px) {
-      .buttons button {
-        flex: 1 1 100%;
-        font-size: 20px;
-      }
+
+    .exp-btn:hover::after,
+    .exp-btn.active::after { width: 100%; }
+
+    .exp-btn:hover,
+    .exp-btn.active {
+      border-color: var(--accent);
+      background: rgba(0, 212, 255, 0.06);
+    }
+
+    .exp-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .exp-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .exp-sub {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .exp-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      padding: 0.1rem 0.45rem;
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      color: var(--accent);
+      margin-top: 0.35rem;
+    }
+
+    /* 播放器 */
+    .player-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    .player-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.3);
+      gap: 1rem;
+    }
+
+    #player-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    #player-desc {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-align: right;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      max-height: 520px;
+      background: #000;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* RWD */
+    @media (max-width: 700px) {
+      header h1 { font-size: 1.5rem; }
+      .compare { grid-template-columns: repeat(2, 1fr); }
+      .experiments { grid-template-columns: repeat(2, 1fr); }
+      .player-bar { flex-direction: column; align-items: flex-start; }
+      #player-desc { text-align: left; }
+    }
+
+    @media (max-width: 480px) {
+      .experiments { grid-template-columns: 1fr; }
+      .wrap { padding: 2rem 1rem; }
     }
   </style>
 </head>
 <body>
+  <div class="wrap">
 
-  <h1>?�梵谷六?��???/h1>
+    <header>
+      <h1>《梵谷六重奏》</h1>
+      <p>Photomosaic — 資料量與視覺還原度的實驗</p>
+    </header>
 
-  <div class="buttons">
-    <button onclick="changeVideo('videos/2-color-pixel-2x.mp4')">2-Color Pixel</button>
-    <button onclick="changeVideo('videos/7-color-pixel-2x.mp4')">7-Color Pixel</button>
-    <button onclick="changeVideo('videos/24-color-pixel-2x.mp4')">24-Color Pixel</button>
-    <button onclick="changeVideo('videos/van-gogh-877-16x.mp4')">Van Gogh 877</button>
-    <button onclick="changeVideo('videos/polygon-10000-16x.mp4')">Polygon 10000</button>
-    <button onclick="changeVideo('videos/masterpiece-16145-16x.mp4')">Masterpiece 16145</button>
+    <!-- 成果圖比較列 -->
+    <div class="compare">
+      <div class="compare-item">
+        <img src="data/Van Gogh.png" alt="原圖">
+        <div class="compare-label">原圖 · 梵谷自畫像</div>
+      </div>
+      <div class="compare-item">
+        <img src="data/out2.png" alt="2 色">
+        <div class="compare-label">實驗 1 · 2 色像素</div>
+      </div>
+      <div class="compare-item">
+        <img src="data/outvan.png" alt="梵谷圖庫">
+        <div class="compare-label">實驗 4 · 梵谷圖庫</div>
+      </div>
+      <div class="compare-item">
+        <img src="data/oart.png" alt="世界名畫">
+        <div class="compare-label">實驗 6 · 16,145 幅名畫</div>
+      </div>
+    </div>
+
+    <!-- 六個實驗 -->
+    <div class="experiments">
+      <button class="exp-btn active"
+        onclick="play(this,'videos/2-color-pixel-2x.mp4','實驗 1 — 2 色純色像素','以黑白兩色方塊拼合，呈現最低資料量的像素化還原')">
+        <span class="exp-num">EXP 01</span>
+        <span class="exp-name">2-Color Pixel</span>
+        <span class="exp-sub">純色方塊</span>
+        <span class="exp-badge">2 tiles</span>
+      </button>
+      <button class="exp-btn"
+        onclick="play(this,'videos/7-color-pixel-2x.mp4','實驗 2 — 7 色純色像素','擴充至七種顏色方塊，色彩分層開始清晰可辨')">
+        <span class="exp-num">EXP 02</span>
+        <span class="exp-name">7-Color Pixel</span>
+        <span class="exp-sub">純色方塊</span>
+        <span class="exp-badge">7 tiles</span>
+      </button>
+      <button class="exp-btn"
+        onclick="play(this,'videos/24-color-pixel-2x.mp4','實驗 3 — 24 色純色像素','24 色方塊使輪廓與光影細節大幅提升')">
+        <span class="exp-num">EXP 03</span>
+        <span class="exp-name">24-Color Pixel</span>
+        <span class="exp-sub">純色方塊</span>
+        <span class="exp-badge">24 tiles</span>
+      </button>
+      <button class="exp-btn"
+        onclick="play(this,'videos/van-gogh-877-16x.mp4','實驗 4 — 梵谷單一畫家圖庫','以梵谷畫作碎片拼合梵谷本人，產生強烈的自我指涉視覺效果')">
+        <span class="exp-num">EXP 04</span>
+        <span class="exp-name">Van Gogh 877</span>
+        <span class="exp-sub">梵谷單一畫家</span>
+        <span class="exp-badge">~877 tiles</span>
+      </button>
+      <button class="exp-btn"
+        onclick="play(this,'videos/polygon-10000-16x.mp4','實驗 5 — 多邊形幾何圖庫','以幾何多邊形圖案構成，呈現抽象拼貼效果')">
+        <span class="exp-num">EXP 05</span>
+        <span class="exp-name">Polygon 10,000</span>
+        <span class="exp-sub">幾何多邊形</span>
+        <span class="exp-badge">10,000 tiles</span>
+      </button>
+      <button class="exp-btn"
+        onclick="play(this,'videos/masterpiece-16145-16x.mp4','實驗 6 — 世界名畫全集（16,145 張）','WikiArt 49 位畫家全收錄，資料量最大，色彩還原最精準')">
+        <span class="exp-num">EXP 06</span>
+        <span class="exp-name">Masterpiece 16,145</span>
+        <span class="exp-sub">世界名畫全集</span>
+        <span class="exp-badge">16,145 tiles</span>
+      </button>
+    </div>
+
+    <!-- 影片播放器 -->
+    <div class="player-wrap">
+      <div class="player-bar">
+        <span id="player-title">實驗 1 — 2 色純色像素</span>
+        <span id="player-desc">以黑白兩色方塊拼合，呈現最低資料量的像素化還原</span>
+      </div>
+      <video id="vid" controls autoplay loop muted playsinline>
+        <source id="vid-src" src="videos/2-color-pixel-2x.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <footer>
+      <p>
+        Python · OpenCV · KMeans · EDSR Super Resolution ·
+        <a href="https://github.com/Doreen1113/Photomosaic" target="_blank">GitHub →</a>
+      </p>
+    </footer>
+
   </div>
 
-  <video id="videoPlayer" controls>
-    <source src="2-color-pixel-2x.mp4" type="video/mp4">
-    ?��??�覽?��??�援影�??�放??
-  </video>
-
   <script>
-    function changeVideo(filename) {
-      const player = document.getElementById('videoPlayer');
-      player.src = filename;
-      player.load();
-      player.play();
+    function play(btn, src, title, desc) {
+      document.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('player-title').textContent = title;
+      document.getElementById('player-desc').textContent = desc;
+      const v = document.getElementById('vid');
+      document.getElementById('vid-src').src = src;
+      v.load();
+      v.play();
     }
   </script>
-
 </body>
 </html>
